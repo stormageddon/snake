@@ -12,12 +12,12 @@ class Game {
         this.score = 0;
 
         let keyPressListener = new KeyPressListener(this);
-        //keyPressListener.keyup = keyPressListener.keyup.bind(this);
         document.addEventListener("keyup", keyPressListener.keyup)
     };
 
     start() {        
         this.food = new Food(this.ctx);
+        this.food.generate();
 
         // draw the grid
         let backgroundCtx = document.getElementById('background-canvas').getContext("2d")
@@ -81,7 +81,6 @@ class KeyPressListener {
     }
 
     keyup(e) {
-        console.log(`key pressed: ${e.code}`);
         switch (e.code) {
             case 'Escape':
                 game.running = !game.running;
@@ -118,7 +117,6 @@ class Food {
     }
 
     generate() {
-        console.log('GENERATE');
         this.x = Math.floor(Math.random() * game.rows);
         this.y = Math.floor(Math.random() * game.rows);
         delete this.cube;
@@ -126,7 +124,6 @@ class Food {
     }
 
     tick() {
-        console.log(`(${this.cube.x}, ${this.cube.y})`)
         this.draw();
     }
 
@@ -139,6 +136,8 @@ class Cube {
     constructor(x, y, ctx, red = 0, green = 255, blue = 255, isHead = false) {
         this.x = x;
         this.y = y;
+        this.lastX;
+        this.lastY;
         this.ctx = ctx;
         this.isHead = isHead;
         this.red = red;
@@ -181,7 +180,8 @@ class Snake {
     }
 
     tick() { 
-        console.log(this.body);
+        this.head.lastX = this.head.x;
+        this.head.lastY = this.head.y;
         switch(this.direction) {
             case DIRECTIONS.RIGHT:
                 this.x += 1;
@@ -204,22 +204,16 @@ class Snake {
         }
 
         this.body.forEach( (cube, i) => {
-            switch(this.direction) {
-                case DIRECTIONS.RIGHT:
-                    cube.x += 1;
-                    break;
-                case DIRECTIONS.LEFT:
-                    cube.x -= 1;               
-                    break;
-                case DIRECTIONS.UP:
-                    cube.y -= 1;
-                    break;
-                case DIRECTIONS.DOWN:
-                    cube.y += 1;
-                    break;
-                default:
-                    console.log("Invalid direction");
-                this.body[i] = cube;
+            if (i === 0) {
+                cube.lastX = cube.x;
+                cube.lastY = cube.y;
+                cube.x = this.head.lastX;
+                cube.y = this.head.lastY;
+            } else {
+                cube.lastX = cube.x;
+                cube.lastY = cube.y;
+                cube.x = this.body[i - 1].lastX;
+                cube.y = this.body[i - 1].lastY;
             }
         })
         
@@ -228,10 +222,15 @@ class Snake {
     }
 
     grow() {
+        let cube = null;
         if (this.body.length === 0) {
-            const cube = new Cube(this.head.x, this.head.y, this.ctx, 0, 255, 255, false);
-            this.body.push(cube);
-        }       
+            cube = new Cube(this.head.x-1, this.head.y, this.ctx, 0, 255, 255, false);
+        }
+        else {
+            cube = new Cube(this.body[this.body.length - 1].x-1, this.body[this.body.length - 1].y, this.ctx);
+        }
+        
+        this.body.push(cube);
     }
 
     checkForLoss() {
@@ -244,9 +243,10 @@ class Snake {
     }
 
     draw() {
-        console.log(`head: (${this.head.x},${this.head.y})`);
         this.head.draw();
-        this.body.forEach(cube => cube.draw());
+        this.body.forEach(cube => {
+            cube.draw();
+        });
     }
 }
 
