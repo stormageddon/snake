@@ -78,6 +78,7 @@ function init() {
 
 class KeyPressListener {
     constructor() {
+        this.presses = []
     }
 
     keyup(e) {
@@ -239,7 +240,18 @@ class Snake {
             || this.y >= game.cols
             || this.y < 0) {
                 game.end(false);
+                return;
         }
+
+        if (this.body.length > 0) {
+            const collidedWithSelf = this.body.filter(cube => {
+                console.log(`cube: (${cube.x},${cube.y}) vs head: (${this.head.x}, ${this.head.y})`);
+                return cube.x === this.head.x && cube.y === this.head.y
+            }).length > 0;
+
+            game.end(!collidedWithSelf);
+        }
+        
     }
 
     draw() {
