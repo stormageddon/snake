@@ -69,7 +69,7 @@ class Game {
     }
 }
 
-let game;
+let game, presses;
 
 function init() {
     game = new Game();
@@ -78,7 +78,7 @@ function init() {
 
 class KeyPressListener {
     constructor() {
-        this.presses = []
+        presses = [];
     }
 
     keyup(e) {
@@ -87,16 +87,16 @@ class KeyPressListener {
                 game.running = !game.running;
                 break;
             case 'ArrowLeft':
-                if (game.snake.direction !== DIRECTIONS.RIGHT) game.snake.direction = DIRECTIONS.LEFT
+                if (game.snake.direction !== DIRECTIONS.RIGHT) presses.push(DIRECTIONS.LEFT)//game.snake.direction = DIRECTIONS.LEFT
                 break;
             case 'ArrowRight':
-                if (game.snake.direction !== DIRECTIONS.LEFT) game.snake.direction = DIRECTIONS.RIGHT
+                if (game.snake.direction !== DIRECTIONS.LEFT) presses.push(DIRECTIONS.RIGHT)//game.snake.direction = DIRECTIONS.RIGHT
                 break;
             case 'ArrowUp':
-                if (game.snake.direction !== DIRECTIONS.DOWN) game.snake.direction = DIRECTIONS.UP
+                if (game.snake.direction !== DIRECTIONS.DOWN) presses.push(DIRECTIONS.UP)//game.snake.direction = DIRECTIONS.UP
                 break;
             case 'ArrowDown':
-                if (game.snake.direction !== DIRECTIONS.UP) game.snake.direction = DIRECTIONS.DOWN
+                if (game.snake.direction !== DIRECTIONS.UP) presses.push(DIRECTIONS.DOWN)//game.snake.direction = DIRECTIONS.DOWN
                 break;
         }
     }
@@ -183,6 +183,12 @@ class Snake {
     tick() { 
         this.head.lastX = this.head.x;
         this.head.lastY = this.head.y;
+
+        const newDirection = presses.shift();
+        if (newDirection) {
+            this.direction = newDirection;
+        }
+
         switch(this.direction) {
             case DIRECTIONS.RIGHT:
                 this.x += 1;
