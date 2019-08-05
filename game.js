@@ -61,7 +61,7 @@ class Game {
                 this.food.generate(arr);
                 this.score++;
                 this.tickSpeed -= 5;
-                this.tickSpeed = this.clamp(tickSpeed, 75, 150)
+                this.tickSpeed = clamp(this.tickSpeed, 75, 150)
                 clearInterval(this.gameTimer);
                 this.gameTimer = setInterval(x => {this.tick()}, this.tickSpeed);
             }
