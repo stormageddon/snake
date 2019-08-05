@@ -164,6 +164,8 @@ class Cube {
     tick() {}
 
     draw() {
+        if (!game.running) return;
+
         this.ctx.fillStyle = `rgb(${this.red},${this.green},${this.blue})`
         this.ctx.fillRect(this.x * (game.width / game.rows) + 1, this.y * (game.width / game.cols) + 1, 500 / 20 - 2, 500 / 20 - 2);
 
@@ -240,7 +242,8 @@ class Snake {
         })
         
         this.checkForLoss()
-        this.draw();
+        this.draw();   
+
     }
 
     grow() {
