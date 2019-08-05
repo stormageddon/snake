@@ -171,15 +171,17 @@ class Cube {
 
         if (this.isHead) {
             // Draw Eyes
-            // this.ctx.beginPath();
-            // this.ctx.arc(this.x + 8, this.y + 15, 2, 0, 2 * Math.PI);
-            // this.ctx.fillStyle = 'rgb(0,0,0)';
-            // this.ctx.fill();
+            this.ctx.beginPath();
+            this.ctx.arc(this.x * (game.width / game.rows) + 9, this.y * (game.width / game.cols) + 16, 2, 0, 2 * Math.PI);
+            this.ctx.fillStyle = 'rgb(0,0,0)';
+            this.ctx.fill();
+            this.ctx.closePath();
             
-            // this.ctx.beginPath();
-            // this.ctx.arc(this.x + 18, this.y + 15, 2, 0, 2 * Math.PI);
-            // this.ctx.fillStyle = 'rgb(0,0,0)';
-            // this.ctx.fill();
+            this.ctx.beginPath();
+            this.ctx.arc(this.x * (game.width / game.rows) + 20, this.y * (game.width / game.cols) + 16, 2, 0, 2 * Math.PI);
+            this.ctx.fillStyle = 'rgb(0,0,0)';
+            this.ctx.fill();
+            this.ctx.closePath();
         }
     }
 }
