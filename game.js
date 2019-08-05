@@ -10,6 +10,7 @@ class Game {
         this.snake = new Snake(0,0,this.ctx);
         this.food;
         this.score = 0;
+        this.tickSpeed = 150; // in ms
 
         let keyPressListener = new KeyPressListener(this);
         document.addEventListener("keyup", keyPressListener.keyup)
@@ -34,7 +35,7 @@ class Game {
             backgroundCtx.stroke();
         }
         
-        setInterval(x => {this.tick()}, 150)
+        this.gameTimer = setInterval(x => {this.tick()}, this.tickSpeed);
     }
 
     end(didWin) {
@@ -60,11 +61,12 @@ class Game {
                 arr.push(this.snake.head);
                 this.food.generate(arr);
                 this.score++;
+                this.tickSpeed -= 5;
+                this.tickSpeed = this.clamp(tickSpeed, 75, 150)
+                clearInterval(this.gameTimer);
+                this.gameTimer = setInterval(x => {this.tick()}, this.tickSpeed);
             }
         }
-    }
-
-    draw() {        
     }
 
     didCollide(snake, food) {
