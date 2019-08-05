@@ -40,6 +40,7 @@ class Game {
     end(didWin) {
         if (!didWin) {
             this.running = false;
+            this.ctx.clearRect(0, 0, this.width, this.height);
             this.ctx.fillStyle = "rgb(255,0,0)"
             this.ctx.font = "30px Arial";
             this.ctx.fillText(`Game Over! Final Score was ${this.score}`, 40, this.height / 2 - 40);
@@ -55,7 +56,9 @@ class Game {
             let collision = this.didCollide(this.snake, this.food);
             if (collision) {
                 this.snake.grow();
-                this.food.generate();
+                let arr = this.snake.body.slice();
+                arr.push(this.snake.head);
+                this.food.generate(arr);
                 this.score++;
             }
         }
@@ -117,11 +120,22 @@ class Food {
         this.cube = new Cube(this.x, this.y, this.ctx, 255, 0, 0, false);
     }
 
-    generate() {
+    generate(invalidLocations) {
         this.x = Math.floor(Math.random() * game.rows);
         this.y = Math.floor(Math.random() * game.rows);
+
+        while(!this.validCoordinates(this.x, this.y, invalidLocations)) {
+            this.x = Math.floor(Math.random() * game.rows);
+            this.y = Math.floor(Math.random() * game.rows);
+        }
+
         delete this.cube;
         this.cube = new Cube(this.x, this.y, this.ctx, 255, 0, 0, false);
+    }
+
+    validCoordinates(x, y, invalidLocations) {
+        if (!invalidLocations) return true;
+        return !invalidLocations.some( cube => { return x === cube.x && y === cube.y } );
     }
 
     tick() {
@@ -251,7 +265,6 @@ class Snake {
 
         if (this.body.length > 0) {
             const collidedWithSelf = this.body.filter(cube => {
-                console.log(`cube: (${cube.x},${cube.y}) vs head: (${this.head.x}, ${this.head.y})`);
                 return cube.x === this.head.x && cube.y === this.head.y
             }).length > 0;
 
