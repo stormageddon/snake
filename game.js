@@ -51,7 +51,6 @@ class Game {
     tick() {
         if (this.running) {
             this.ctx.clearRect(0, 0, this.width, this.height);
-            this.draw()
             this.snake.tick();
             this.food.tick();
             let collision = this.didCollide(this.snake, this.food);
