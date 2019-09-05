@@ -49,8 +49,8 @@ class Game {
     }
 
     tick() {
-        if (this.running) {
-            this.ctx.clearRect(0, 0, this.width, this.height);
+        if (this.running) {            
+            this.draw();
             this.snake.tick();
             this.food.tick();
             let collision = this.didCollide(this.snake, this.food);
@@ -66,6 +66,13 @@ class Game {
                 this.gameTimer = setInterval(x => {this.tick()}, this.tickSpeed);
             }
         }
+    }
+
+    draw() {
+        this.ctx.clearRect(0, 0, this.width, this.height);
+        this.ctx.fillStyle = "rgb(255,255,255)"
+        this.ctx.font = "20px ComicSans"
+        this.ctx.fillText("Score: " + this.score, 5, 22);
     }
 
     didCollide(snake, food) {
